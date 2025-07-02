@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FinansAsistan.Api.Dtos;
+using FinansAsistan.Api.Features.Categories.Commands;
 using FinansAsistan.Api.Features.Transactions.Commands; // Command'leri tanımak için eklendi
 using FinansAsistan.Core.Entities;
 
@@ -21,6 +22,8 @@ namespace FinansAsistan.Api
             CreateMap<UpdateTransactionDto, Transaction>();
             CreateMap<UpdateTransactionDto, UpdateTransactionCommand>();
             CreateMap<UpdateTransactionCommand, Transaction>();
+            CreateMap<CreateCategoryCommand, Category>();
+
 
             // ---- EKSİK OLAN VE ŞİMDİ EKLENEN MAP ----
             // CreateTransactionCommand'den Transaction entity'sine dönüşüm kuralı
