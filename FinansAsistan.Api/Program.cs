@@ -26,6 +26,8 @@ namespace FinansAsistan.Api
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             // AutoMapper'ý servislere ekliyoruz.
             builder.Services.AddAutoMapper(typeof(Program));
+            // MediatR'ý servislere ekliyoruz ve bu projedeki (assembly) tüm Handler'larý otomatik bulmasýný söylüyoruz.
+            builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
             // ---- YENÝ EKLENEN BÖLÜM SONU ----
 

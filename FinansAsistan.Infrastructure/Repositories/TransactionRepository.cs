@@ -35,12 +35,16 @@ namespace FinansAsistan.Infrastructure.Repositories
 
         public async Task<IReadOnlyList<Transaction>> GetAllAsync()
         {
-            return await _context.Transactions.ToListAsync();
+            // .Include() ile Category verisini de getirmesini söylüyoruz.
+            return await _context.Transactions.Include(t => t.Category).ToListAsync();
         }
 
         public async Task<Transaction> GetByIdAsync(int id)
         {
-            return await _context.Transactions.FindAsync(id);
+            // .Include() ile Category verisini de getirip, sonra ID'ye göre filtreliyoruz.
+            return await _context.Transactions
+                .Include(t => t.Category)
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task UpdateAsync(Transaction transaction)

@@ -1,5 +1,7 @@
-﻿using FinansAsistan.Core.Entities;
-using FinansAsistan.Core.Interfaces; // DbContext yerine artık Interface'i kullanıyoruz
+﻿using FinansAsistan.Api.Dtos;
+using FinansAsistan.Api.Features.Transactions.Commands;
+using FinansAsistan.Api.Features.Transactions.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,59 +12,81 @@ namespace FinansAsistan.Api.Controllers
     [Route("api/[controller]")]
     public class TransactionsController : ControllerBase
     {
-        // Artık DbContext'i değil, sadece kontratımızı (arayüzü) tanıyoruz.
-        private readonly ITransactionRepository _transactionRepository;
+        private readonly IMediator _mediator;
 
-        public TransactionsController(ITransactionRepository transactionRepository)
+        public TransactionsController(IMediator mediator)
         {
-            _transactionRepository = transactionRepository;
+            _mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactions()
+        public async Task<ActionResult<IEnumerable<TransactionDto>>> GetTransactions()
         {
-            var transactions = await _transactionRepository.GetAllAsync();
-            return Ok(transactions);
+            var result = await _mediator.Send(new GetAllTransactionsQuery());
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Transaction>> GetTransaction(int id)
+        public async Task<ActionResult<TransactionDto>> GetTransaction(int id)
         {
-            var transaction = await _transactionRepository.GetByIdAsync(id);
+            var result = await _mediator.Send(new GetTransactionByIdQuery { Id = id });
+            if (result == null) { return NotFound(); }
+            return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<TransactionDto>> PostTransaction(CreateTransactionDto createDto)
+        {
+            var command = new CreateTransactionCommand
+            {
+                Description = createDto.Description,
+                Amount = createDto.Amount,
+                Date = createDto.Date,
+                Type = createDto.Type,
+                CategoryId = createDto.CategoryId
+            };
+            var createdDto = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetTransaction), new { id = createdDto.Id }, createdDto);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTransaction(int id, UpdateTransactionDto updateDto)
+        {
+            if (id != updateDto.Id)
+            {
+                return BadRequest("URL ID and Body ID must match.");
+            }
+
+            var transaction = await _mediator.Send(new GetTransactionByIdQuery { Id = id });
             if (transaction == null)
             {
                 return NotFound();
             }
-            return Ok(transaction);
-        }
 
-        [HttpPost]
-        public async Task<ActionResult<Transaction>> PostTransaction(Transaction transaction)
-        {
-            var createdTransaction = await _transactionRepository.AddAsync(transaction);
-            return CreatedAtAction(nameof(GetTransaction), new { id = createdTransaction.Id }, createdTransaction);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransaction(int id, Transaction transaction)
-        {
-            if (id != transaction.Id)
+            var command = new UpdateTransactionCommand
             {
-                return BadRequest();
-            }
-            await _transactionRepository.UpdateAsync(transaction);
+                Id = id,
+                Description = updateDto.Description,
+                Amount = updateDto.Amount,
+                Date = updateDto.Date,
+                Type = updateDto.Type,
+                CategoryId = updateDto.CategoryId
+            };
+
+            await _mediator.Send(command);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTransaction(int id)
         {
-            var transaction = await _transactionRepository.GetByIdAsync(id);
+            var transaction = await _mediator.Send(new GetTransactionByIdQuery { Id = id });
             if (transaction == null)
             {
                 return NotFound();
             }
-            await _transactionRepository.DeleteAsync(id);
+
+            await _mediator.Send(new DeleteTransactionCommand { Id = id });
             return NoContent();
         }
     }
