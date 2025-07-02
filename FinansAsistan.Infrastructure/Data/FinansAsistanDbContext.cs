@@ -13,7 +13,7 @@ namespace FinansAsistan.Infrastructure.Data
         public DbSet<Transaction> Transactions { get; set; }
 
         // Gelecekte buraya yeni tablolarımızı ekleyeceğiz.
-        // public DbSet<Category> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; }
         // public DbSet<Budget> Budgets { get; set; }
     }
 }

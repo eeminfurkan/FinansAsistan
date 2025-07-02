@@ -1,3 +1,5 @@
+using FinansAsistan.Core.Interfaces;
+using FinansAsistan.Infrastructure.Repositories;
 using FinansAsistan.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 namespace FinansAsistan.Api
@@ -20,6 +22,10 @@ namespace FinansAsistan.Api
             //    kullanacaðýný burada belirtiyoruz.
             builder.Services.AddDbContext<FinansAsistanDbContext>(options =>
                 options.UseSqlServer(connectionString));
+            builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            // AutoMapper'ý servislere ekliyoruz.
+            builder.Services.AddAutoMapper(typeof(Program));
 
             // ---- YENÝ EKLENEN BÖLÜM SONU ----
 

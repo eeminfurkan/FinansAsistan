@@ -19,5 +19,9 @@ namespace FinansAsistan.Core.Entities
         // İşlemin türü: "Income" (Gelir) veya "Expense" (Gider)
         // Bunu ileride daha gelişmiş bir yapıya (Enum) çevirebiliriz.
         public string Type { get; set; }
+
+        // ---- YENİ EKLENEN SATIRLAR ----
+        public int CategoryId { get; set; } // Foreign Key (Yabancı Anahtar)
+        public Category Category { get; set; } // Navigation Property (Gezinme Özelliği)
     }
 }
