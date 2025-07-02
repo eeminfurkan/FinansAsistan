@@ -2,6 +2,8 @@ using FinansAsistan.Core.Interfaces;
 using FinansAsistan.Infrastructure.Repositories;
 using FinansAsistan.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using FinansAsistan.Api.Middleware;
+
 namespace FinansAsistan.Api
 {
     public class Program
@@ -47,6 +49,9 @@ namespace FinansAsistan.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
 
             // Gelen istekleri HTTPS'e yönlendir. Bu bir güvenlik standardýdýr.
             // EKSÝK OLABÝLECEK SATIR

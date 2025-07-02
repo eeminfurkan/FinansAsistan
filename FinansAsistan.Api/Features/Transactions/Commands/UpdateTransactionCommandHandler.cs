@@ -4,6 +4,8 @@ using MediatR;
 using System; // Exception için eklendi
 using System.Threading;
 using System.Threading.Tasks;
+using FinansAsistan.Api.Exceptions; // Yeni using'i ekle
+
 
 namespace FinansAsistan.Api.Features.Transactions.Commands
 {
@@ -29,7 +31,8 @@ namespace FinansAsistan.Api.Features.Transactions.Commands
             var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
             if (category == null)
             {
-                throw new Exception($"Category with Id '{request.CategoryId}' not found.");
+                // Artık genel bir Exception değil, kendi özel ValidationException'ımızı fırlatıyoruz.
+                throw new ValidationException($"Category with Id '{request.CategoryId}' not found.");
             }
             // ---- KONTROL SONU ----
 

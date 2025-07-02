@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace FinansAsistan.Api.Controllers
 {
@@ -13,10 +14,12 @@ namespace FinansAsistan.Api.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public TransactionsController(IMediator mediator)
+        public TransactionsController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -37,41 +40,31 @@ namespace FinansAsistan.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<TransactionDto>> PostTransaction(CreateTransactionDto createDto)
         {
-            var command = new CreateTransactionCommand
-            {
-                Description = createDto.Description,
-                Amount = createDto.Amount,
-                Date = createDto.Date,
-                Type = createDto.Type,
-                CategoryId = createDto.CategoryId
-            };
-            var createdDto = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetTransaction), new { id = createdDto.Id }, createdDto);
+            // Manuel atama yerine doğrudan AutoMapper'ı kullanıyoruz.
+            var command = _mapper.Map<CreateTransactionCommand>(createDto);
+
+            var createdTransactionDto = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetTransaction), new { id = createdTransactionDto.Id }, createdTransactionDto);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTransaction(int id, UpdateTransactionDto updateDto)
         {
+            // URL'den gelen ID ile DTO'dan gelen ID'nin tutarlılığını kontrol etmek iyi bir pratiktir.
             if (id != updateDto.Id)
             {
-                return BadRequest("URL ID and Body ID must match.");
+                return BadRequest("URL ID must match the ID in the request body.");
             }
 
-            var transaction = await _mediator.Send(new GetTransactionByIdQuery { Id = id });
-            if (transaction == null)
+            // Önce kaydın var olup olmadığını kontrol edelim.
+            var transactionExists = await _mediator.Send(new GetTransactionByIdQuery { Id = id });
+            if (transactionExists == null)
             {
                 return NotFound();
             }
 
-            var command = new UpdateTransactionCommand
-            {
-                Id = id,
-                Description = updateDto.Description,
-                Amount = updateDto.Amount,
-                Date = updateDto.Date,
-                Type = updateDto.Type,
-                CategoryId = updateDto.CategoryId
-            };
+            // DTO'yu doğrudan Command'e çeviriyoruz.
+            var command = _mapper.Map<UpdateTransactionCommand>(updateDto);
 
             await _mediator.Send(command);
             return NoContent();
