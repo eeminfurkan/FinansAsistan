@@ -52,5 +52,10 @@ namespace FinansAsistan.Infrastructure.Repositories
             _context.Entry(transaction).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> HasTransactionsWithCategoryAsync(int categoryId)
+        {
+            return await _context.Transactions.AnyAsync(t => t.CategoryId == categoryId);
+        }
     }
 }

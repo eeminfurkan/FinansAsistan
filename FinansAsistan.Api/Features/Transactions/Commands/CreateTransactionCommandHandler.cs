@@ -30,7 +30,6 @@ namespace FinansAsistan.Api.Features.Transactions.Commands
 
         public async Task<TransactionDto> Handle(CreateTransactionCommand request, CancellationToken cancellationToken)
         {
-            // ---- YENİ EKLENEN KONTROL ----
             var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
             if (category == null)
             {

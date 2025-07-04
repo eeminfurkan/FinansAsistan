@@ -11,5 +11,7 @@ namespace FinansAsistan.Core.Interfaces
         Task<Transaction> AddAsync(Transaction transaction);
         Task UpdateAsync(Transaction transaction);
         Task DeleteAsync(int id);
+        Task<bool> HasTransactionsWithCategoryAsync(int categoryId);
+
     }
 }

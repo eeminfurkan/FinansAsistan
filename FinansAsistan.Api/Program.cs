@@ -50,6 +50,8 @@ namespace FinansAsistan.Api
                 app.UseSwaggerUI();
             }
 
+            // ---- YENÝ EKLENEN SATIR ----
+            // Global hata yönetimi middleware'ini pipeline'a ekliyoruz.
             app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 
