@@ -1,4 +1,4 @@
-﻿using FinansAsistan.Api.Dtos;
+﻿using FinansAsistan.Shared.Dtos;
 using FinansAsistan.Api.Features.Categories.Commands;
 using FinansAsistan.Api.Features.Categories.Queries;
 using MediatR;

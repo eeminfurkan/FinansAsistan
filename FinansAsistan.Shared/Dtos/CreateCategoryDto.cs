@@ -1,4 +1,4 @@
-﻿namespace FinansAsistan.Api.Dtos
+﻿namespace FinansAsistan.Shared.Dtos
 {
     public class CreateCategoryDto
     {

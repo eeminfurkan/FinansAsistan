@@ -1,4 +1,4 @@
-﻿using FinansAsistan.Api.Dtos; // TransactionDto'yu kullanmak için
+﻿using FinansAsistan.Shared.Dtos; // TransactionDto'yu kullanmak için
 using MediatR;
 using System.Collections.Generic;
 

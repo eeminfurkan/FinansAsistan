@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using FinansAsistan.Api.Dtos;
+using FinansAsistan.Shared.Dtos;
 using FinansAsistan.Core.Entities;
 using FinansAsistan.Core.Interfaces;
 using MediatR;

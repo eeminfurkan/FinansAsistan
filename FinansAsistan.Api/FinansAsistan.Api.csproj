@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FinansAsistan.Core\FinansAsistan.Core.csproj" />
     <ProjectReference Include="..\FinansAsistan.Infrastructure\FinansAsistan.Infrastructure.csproj" />
+    <ProjectReference Include="..\FinansAsistan.Shared\FinansAsistan.Shared.csproj" />
   </ItemGroup>
 
 </Project>
